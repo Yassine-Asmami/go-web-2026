@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 )
 
@@ -20,6 +21,18 @@ func main() {
 	port := flag.String("port", "8080", "port d'écoute")
 	flag.Parse()
 
+	games, err := FetchGames()
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "Erreur :", err)
+		os.Exit(1)
+	}
+	tournaments, err := FetchTournaments()
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "Erreur :", err)
+		os.Exit(1)
+	}
+	printJeux(games, tournaments)
+
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /{$}", Accueil)
 	mux.HandleFunc("GET /jeux", listJeux)
@@ -32,7 +45,6 @@ func main() {
 	log.Printf("GameDex sur http://localhost%s", addr)
 	log.Fatal(http.ListenAndServe(addr, mux))
 }
-
 
 func Accueil(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
@@ -72,4 +84,12 @@ func Jeux(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Jeu %d : %s\n", id, name)
 }
 
-
+func printJeux(games []Game, tournaments []Tournament) {
+	count := map[int]int{}
+	for _, t := range tournaments {
+		count[t.GameID]++
+	}
+	for _, g := range games {
+		fmt.Printf("%s (%d) : %d tournoi(s)\n", g.Name, g.Year, count[g.ID])
+	}
+}
