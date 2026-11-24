@@ -1,4 +1,5 @@
-# Application web en Go · B1 Lyon Ynov Campus
+# TP Yassine Asmami
+# Application web en Go · B1 Lyon Ynov Campus 
 
 Fil rouge du cours : **GameDex**, un catalogue de jeux vidéo et de leurs tournois. Les jeux sont réels, les tournois sont inventés.
 
